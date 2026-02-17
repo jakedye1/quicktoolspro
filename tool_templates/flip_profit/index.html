@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Profit Calculator - Free Online Tool</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; color: #444; font-weight: 600; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        input:focus { outline: none; border-color: #f5576c; }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 25px;
+            background: #fff5f5;
+            border-radius: 10px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .profit {
+            font-size: 42px;
+            font-weight: 700;
+            color: #10b981;
+        }
+        .loss {
+            font-size: 42px;
+            font-weight: 700;
+            color: #ef4444;
+        }
+        .breakdown { margin-top: 20px; }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between 10px ;
+            padding:-bottom: 1;
+        }
+       px solid #eee .total { font-weight: 700; color: #333; }
+0;
+            border</head>
+<body    </style>
+>
+    <div class="container">
+        <h1>🔄 Flip Profit Calculator        <p class</h1>
+="subtitle">Calculate your flipping profit</p>
+        
+        -group">
+            <div class="input<label>Purchase Price            <input type ($)</label>
+="number" id="purchase" placeholder="50000">
+        </div>
+        
+        <div class="input-group">
+            <labelovation Cost ($)>Repair/Ren</label>
+            <input type="number" id="repair" placeholder="10000">
+        </div>
+        
+        <div class="input-group">
+            <label>Holding Costs ($)</label>
+            <input type="number" id="holding" placeholder="5000">
+        </div>
+        
+        <div class="input-group">
+            <label>Selling Fees ($)</label>
+            <input type="number" id="fees" placeholder="3000">
+        </div>
+        
+        <div class="input-group">
+            <label>Selling Price ($)</label>
+            <input type="number" id="selling" placeholder="85000">
+        </div>
+        
+        <button onclick="calculate()">Calculate Profit</button>
+        
+        <div class="result" id="result">
+            <div>Your Profit:</div>
+            <div class="profit" id="profit">$0</div>
+            <div class="breakdown">
+                <div class="breakdown-item total">
+                    <span>Total Investment</span>
+                    <span id="investment">$0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Purchase</span>
+                    <span id="purchaseDisplay">$0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Repairs</span>
+                    <span id="repairDisplay">$0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Holding</span>
+                    <span id="holdingDisplay">$0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Fees</span>
+                    <span id="feesDisplay">$0</span>
+                </div>
+                <div class="breakdown-item total">
+                    <span>Sale Price</span>
+                    <span id="sellingDisplay">$0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculate() {
+            const purchase = parseFloat(document.getElementById('purchase').value) || 0;
+            const repair = parseFloat(document.getElementById('repair').value) || 0;
+            const holding = parseFloat(document.getElementById('holding').value) || 0;
+            const fees = parseFloat(document.getElementById('fees').value) || 0;
+            const selling = parseFloat(document.getElementById('selling').value) || 0;
+            
+            const totalInvestment = purchase + repair + holding + fees;
+            const profit = selling - totalInvestment;
+            
+            const profitEl = document.getElementById('profit');
+            profitEl.textContent = (profit >= 0 ? '+' : '') + '$' + profit.toLocaleString();
+            profitEl.className = profit >= 0 ? 'profit' : 'loss';
+            
+            document.getElementById('investment').textContent = '$' + totalInvestment.toLocaleString();
+            document.getElementById('purchaseDisplay').textContent = '$' + purchase.toLocaleString();
+            document.getElementById('repairDisplay').textContent = '$' + repair.toLocaleString();
+            document.getElementById('holdingDisplay').textContent = '$' + holding.toLocaleString();
+            document.getElementById('feesDisplay').textContent = '$' + fees.toLocaleString();
+            document.getElementById('sellingDisplay').textContent = '$' + selling.toLocaleString();
+            
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

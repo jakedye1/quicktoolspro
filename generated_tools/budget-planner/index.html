@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner - Quicktoolspro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #12121a;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 440px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            margin-bottom: 6px;
+            font-size: 24px;
+        }
+        .subtitle { color: #6b7280; margin-bottom: 28px; font-size: 14px; }
+        
+        .input-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; color: #9ca3af; font-size: 13px; font-weight: 500; }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a1a25;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            color: #fff;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: #00d4ff; }
+        input::placeholder { color: #4b5563; }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00d4ff, #6366f1);
+            color: #0a0a0f;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 0.15s;
+        }
+        button:active { transform: scale(0.98); }
+        
+        .result {
+            margin-top: 28px;
+            padding: 24px;
+            background: #1a1a25;
+            border-radius: 16px;
+            display: none;
+        }
+        .result.show { display: block; }
+        
+        .budget-label { color: #6b7280; font-size: 13px; margin-bottom: 4px; }
+        .budget {
+            font-size: 36px;
+            font-weight: 800;
+            color: #10b981;
+            font-family: 'Poppins', sans-serif;
+        }
+        .budget.negative { color: #ef4444; }
+        
+        .breakdown { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        .breakdown-item span:first-child { color: #6b7280; }
+        .breakdown-item span:last-child { color: #fff; font-weight: 500; }
+        .breakdown-item.total {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 8px;
+            padding-top: 16px;
+            font-weight: 600;
+        }
+        .breakdown-item.total span:first-child { color: #fff; }
+        .breakdown-item.total span:last-child { color: #00d4ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Budget Planner</h1>
+        <p class="subtitle">Master your monthly finances</p>
+        
+        <div class="input-group">
+            <label>Monthly Income ($)</label>
+            <input type="number" id="income" placeholder="5000">
+        </div>
+        
+        <div class="input-group">
+            <label>Housing ($)</label>
+            <input type="number" id="housing" placeholder="1500">
+        </div>
+        
+        <div class="input-group">
+            <label>Food & Groceries ($)</label>
+            <input type="number" id="food" placeholder="600">
+        </div>
+        
+        <div class="input-group">
+            <label>Transportation ($)</label>
+            <input type="number" id="transport" placeholder="400">
+        </div>
+        
+        <div class="input-group">
+            <label>Utilities ($)</label>
+            <input type="number" id="utilities" placeholder="200">
+        </div>
+        
+        <div class="input-group">
+            <label>Other Expenses ($)</label>
+            <input type="number" id="other" placeholder="300">
+        </div>
+        
+        <button onclick="calculate()">Calculate Budget</button>
+        
+        <div class="result" id="result">
+            <div class="budget-label">Remaining Budget</div>
+            <div class="budget" id="budget">$0</div>
+            <div class="breakdown">
+                <div class="breakdown-item">
+                    <span>Income</span>
+                    <span id="incomeDisplay">$0</span>
+                </div>
+                <div class="breakdown-item total">
+                    <span>Total Expenses</span>
+                    <span id="expensesDisplay">$0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const housing = parseFloat(document.getElementById('housing').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+            
+            const expenses = housing + food + transport + utilities + other;
+            const remaining = income - expenses;
+            
+            const budgetEl = document.getElementById('budget');
+            budgetEl.textContent = (remaining >= 0 ? '+$' : '-$') + Math.abs(remaining).toLocaleString();
+            budgetEl.className = remaining >= 0 ? 'budget' : 'budget negative';
+            
+            document.getElementById('incomeDisplay').textContent = '$' + income.toLocaleString();
+            document.getElementById('expensesDisplay').textContent = '$' + expenses.toLocaleString();
+            
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

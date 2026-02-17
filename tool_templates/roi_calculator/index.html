@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator - Free Online Tool</title>
+    <meta name="description" content="Calculate your return on investment instantly. Free ROI calculator for businesses and projects.">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #444; font-weight: 600; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus { outline: none; border-color: #667eea; }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result-label { color: #666; font-size: 14px; }
+        .result-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .profit { color: #10b981 !important; }
+        .loss { color: #ef4444 !important; }
+        .details { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 ROI Calculator</h1>
+        <p class="subtitle">Calculate your return on investment</p>
+        
+        <div class="input-group">
+            <label>Initial Investment ($)</label>
+            <input type="number" id="initial" placeholder="10000" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label>Final Value ($)</label>
+            <input type="number" id="final" placeholder="15000" min="0">
+        </div>
+        
+        <div class="input-group">
+            <label>Time Period (months)</label>
+            <input type="number" id="months" placeholder="12" min="1">
+        </div>
+        
+        <button onclick="calculate()">Calculate ROI</button>
+        
+        <div class="result" id="result">
+            <div class="result-label">Your ROI</div>
+            <div class="result-value" id="roiValue">0%</div>
+            <div class="details">
+                <div class="detail-row">
+                    <span>Profit/Loss</span>
+                    <span id="profitLoss">$0</span>
+                </div>
+                <div class="detail-row">
+                    <span>Monthly Return</span>
+                    <span id="monthly">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculate() {
+            const initial = parseFloat(document.getElementById('initial').value) || 0;
+            const final = parseFloat(document.getElementById('final').value) || 0;
+            const months = parseFloat(document.getElementById('months').value) || 1;
+            
+            if (initial === 0) {
+                alert('Please enter an initial investment');
+                return;
+            }
+            
+            const roi = ((final - initial) / initial) * 100;
+            const profitLoss = final - initial;
+            const monthly = roi / months;
+            
+            const roiEl = document.getElementById('roiValue');
+            roiEl.textContent = roi.toFixed(2) + '%';
+            roiEl.className = 'result-value ' + (roi >= 0 ? 'profit' : 'loss');
+            
+            document.getElementById('profitLoss').textContent = 
+                (profitLoss >= 0 ? '+' : '') + '$' + profitLoss.toLocaleString();
+            document.getElementById('profitLoss').style.color = profitLoss >= 0 ? '#10b981' : '#ef4444';
+            
+            document.getElementById('monthly').textContent = monthly.toFixed(2) + '%/month';
+            
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

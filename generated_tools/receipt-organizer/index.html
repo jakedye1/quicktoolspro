@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Receipt Organizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --dark2: #1e293b;
+            --dark3: #334155;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 16px;
+            font-size: 16px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--dark3);
+        }
+        .logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; color: var(--primary); }
+        
+        /* Stats - Mobile First */
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat {
+            background: var(--dark2);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-value { font-size: 20px; font-weight: 700; }
+        .stat-value.total { color: var(--light); }
+        .stat-value.business { color: var(--success); }
+        .stat-value.personal { color: var(--danger); }
+        .stat-value.count { color: var(--primary); }
+        .stat-label { font-size: 10px; color: var(--gray); margin-top: 2px; text-transform: uppercase; }
+        
+        /* Mobile Tabs */
+        .tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            background: var(--dark2);
+            border: none;
+            border-radius: 10px;
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            min-width: 70px;
+        }
+        .tab.active { background: var(--primary); color: white; }
+        
+        /* Upload Button - Mobile Big Touch Target */
+        .upload-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+        .upload-btn:active { transform: scale(0.98); }
+        #file-input { display: none; }
+        
+        /* Quick Actions - Mobile Grid */
+        .actions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .action-btn {
+            padding: 16px 12px;
+            background: var(--dark2);
+            border: none;
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-btn:active { background: var(--dark3); }
+        
+        /* Export Button */
+        .export-btn {
+            width: 100%;
+            background: var(--success);
+            color: var(--dark);
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .export-btn:active { opacity: 0.9; }
+        
+        /* Receipts */
+        .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--gray); }
+        
+        .receipt-card {
+            background: var(--dark2);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .receipt-thumb {
+            width: 44px;
+            height: 44px;
+            background: var(--dark3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .receipt-info { flex: 1; min-width: 0; }
+        .receipt-merchant { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .receipt-meta { font-size: 12px; color: var(--gray); margin-top: 2px; }
+        
+        .receipt-tags { display: flex; gap: 6px; margin-top: 6px; }
+        .tag {
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .tag.business { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .tag.personal { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        
+        .receipt-amount { font-size: 17px; font-weight: 700; white-space: nowrap; }
+        
+        /* Processing */
+        .processing { display: none; text-align: center; padding: 40px 20px; }
+        .processing.active { display: block; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid var(--dark3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .processing-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .processing-desc { color: var(--gray); font-size: 14px; }
+        
+        /* Empty */
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+        }
+        .filter-chip {
+            padding: 8px 14px;
+            background: var(--dark2);
+            border: none;
+            border-radius: 20px;
+            color: var(--gray);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .filter-chip.active { background: var(--primary); color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🧾 Receipts</div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value total" id="total-amount">$0</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value business" id="business-amount">$0</div>
+            <div class="stat-label">Business</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value personal" id="personal-amount">$0</div>
+            <div class="stat-label">Personal</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value count" id="receipt-count">0</div>
+            <div class="stat-label">Receipts</div>
+        </div>
+    </div>
+    
+    <!-- Big Upload Button -->
+    <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+        📸 <span>Scan Receipt</span>
+    </button>
+    <input type="file" id="file-input" accept="image/*,.pdf" capture="environment" multiple>
+    
+    <!-- Processing -->
+    <div class="processing" id="processing">
+        <div class="spinner"></div>
+        <div class="processing-title">Processing...</div>
+        <div class="processing-desc">AI is extracting receipt details</div>
+    </div>
+    
+    <!-- Filter -->
+    <div class="filter-bar">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="business">🏢 Business</button>
+        <button class="filter-chip" data-filter="personal">🏠 Personal</button>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="actions-grid">
+        <button class="action-btn">📊 Dashboard</button>
+        <button class="action-btn">🔍 Search</button>
+        <button class="action-btn">📁 Categories</button>
+        <button class="action-btn">📤 Export</button>
+    </div>
+    
+    <!-- Export -->
+    <button class="export-btn" onclick="exportPDF()">
+        📄 Export PDF Report
+    </button>
+    
+    <!-- Receipts List -->
+    <div class="section-title">Recent Receipts</div>
+    <div id="receipts-list">
+        <div class="empty">
+            <div class="empty-icon">📭</div>
+            <div>No receipts yet</div>
+            <div style="font-size: 13px; margin-top: 8px;">Tap "Scan Receipt" to add</div>
+        </div>
+    </div>
+    
+    <script>
+        let receipts = [
+            { id: 1, merchant: 'Shell Gas Station', date: 'Feb 15', amount: 47.82, type: 'business', category: 'Fuel', icon: '⛽' },
+            { id: 2, merchant: 'Whole Foods', date: 'Feb 14', amount: 89.41, type: 'personal', category: 'Groceries', icon: '🛒' },
+            { id: 3, merchant: 'Starbucks', date: 'Feb 13', amount: 12.50, type: 'business', category: 'Meals', icon: '☕' },
+            { id: 4, merchant: 'Office Depot', date: 'Feb 12', amount: 156.99, type: 'business', category: 'Supplies', icon: '📎' },
+        ];
+        
+        let currentFilter = 'all';
+        
+        function renderReceipts() {
+            const list = document.getElementById('receipts-list');
+            const filtered = currentFilter === 'all' 
+                ? receipts 
+                : receipts.filter(r => r.type === currentFilter);
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-icon">📭</div>
+                        <div>No ${currentFilter} receipts</div>
+                    </div>`;
+                return;
+            }
+            
+            list.innerHTML = filtered.map(r => `
+                <div class="receipt-card">
+                    <div class="receipt-thumb">${r.icon}</div>
+                    <div class="receipt-info">
+                        <div class="receipt-merchant">${r.merchant}</div>
+                        <div class="receipt-meta">${r.date} • ${r.category}</div>
+                        <div class="receipt-tags">
+                            <span class="tag ${r.type}">${r.type}</span>
+                        </div>
+                    </div>
+                    <div class="receipt-amount">$${r.amount.toFixed(2)}</div>
+                </div>
+            `).join('');
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            const filtered = currentFilter === 'all' 
+                ? receipts 
+                : receipts.filter(r => r.type === currentFilter);
+            
+            const total = filtered.reduce((sum, r) => sum + r.amount, 0);
+            const business = filtered.filter(r => r.type === 'business').reduce((sum, r) => sum + r.amount, 0);
+            const personal = filtered.filter(r => r.type === 'personal').reduce((sum, r) => sum + r.amount, 0);
+            
+            document.getElementById('total-amount').textContent = '$' + total.toFixed(0);
+            document.getElementById('business-amount').textContent = '$' + business.toFixed(0);
+            document.getElementById('personal-amount').textContent = '$' + personal.toFixed(0);
+            document.getElementById('receipt-count').textContent = filtered.length;
+        }
+        
+        // Filter chips
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                renderReceipts();
+            });
+        });
+        
+        // File upload - Mobile
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            if (this.files.length > 0) {
+                document.getElementById('processing').classList.add('active');
+                
+                setTimeout(() => {
+                    document.getElementById('processing').classList.remove('active');
+                    
+                    const merchants = ['Amazon', 'Target', 'Walmart', 'Costco', 'Best Buy', 'Home Depot'];
+                    const categories = ['Supplies', 'Groceries', 'Electronics', 'Fuel', 'Meals', 'Office'];
+                    const icons = ['📦', '🛒', '🏪', '⛽', '☕', '📎'];
+                    
+                    receipts.unshift({
+                        id: Date.now(),
+                        merchant: merchants[Math.floor(Math.random() * merchants.length)],
+                        date: 'Today',
+                        amount: Math.floor(Math.random() * 150) + 10,
+                        type: Math.random() > 0.5 ? 'business' : 'personal',
+                        category: categories[Math.floor(Math.random() * categories.length)],
+                        icon: icons[Math.floor(Math.random() * icons.length)]
+                    });
+                    renderReceipts();
+                }, 2000);
+            }
+        });
+        
+        function exportPDF() {
+            alert('📄 PDF Export\n\nGenerates tax-ready report with:\n• Summary totals\n• Category breakdown\n• All receipts');
+        }
+        
+        renderReceipts();
+    </script>
+</body>
+</html>

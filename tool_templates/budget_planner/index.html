@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner - Free Online Tool</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; color: #444; font-weight: 600; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        input:focus { outline: none; border-color: #11998e; }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 10px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #11998e;
+        }
+        .breakdown { margin-top: 15px; }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .income { color: #10b981; }
+        .expense { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Budget Planner</h1>
+        <p class="subtitle">Plan your monthly finances</p>
+        
+        <div class="input-group">
+            <label>Monthly Income ($)</label>
+            <input type="number" id="income" placeholder="5000">
+        </div>
+        
+        <div class="input-group">
+            <label>Rent/Mortgage ($)</label>
+            <input type="number" id="rent" placeholder="1500">
+        </div>
+        
+        <div class="input-group">
+            <label>Utilities ($)</label>
+            <input type="number" id="utilities" placeholder="200">
+        </div>
+        
+        <div class="input-group">
+            <label>Food & Groceries ($)</label>
+            <input type="number" id="food" placeholder="500">
+        </div>
+        
+        <div class="input-group">
+            <label>Transportation ($)</label>
+            <input type="number" id="transport" placeholder="300">
+        </div>
+        
+        <div class="input-group">
+            <label>Other Expenses ($)</label>
+            <input type="number" id="other" placeholder="200">
+        </div>
+        
+        <button onclick="calculate()">Calculate Budget</button>
+        
+        <div class="result" id="result">
+            <div>Monthly Remaining:</div>
+            <div class="result-value" id="remaining">$0</div>
+            <div class="breakdown">
+                <div class="breakdown-item">
+                    <span>Total Income</span>
+                    <span class="income" id="totalIncome">$0</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Total Expenses</span>
+                    <span class="expense" id="totalExpenses">$0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const utilities = parseFloat(document.getElementById('utilities').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const other = parseFloat(document.getElementById('other').value) || 0;
+            
+            const expenses = rent + utilities + food + transport + other;
+            const remaining = income - expenses;
+            
+            document.getElementById('remaining').textContent = 
+                (remaining >= 0 ? '+' : '') + '$' + remaining.toLocaleString();
+            document.getElementById('remaining').style.color = remaining >= 0 ? '#11998e' : '#ef4444';
+            
+            document.getElementById('totalIncome').textContent = '$' + income.toLocaleString();
+            document.getElementById('totalExpenses').textContent = '$' + expenses.toLocaleString();
+            
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>

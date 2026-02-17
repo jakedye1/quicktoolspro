@@ -1,0 +1,15 @@
+{
+  "name": "Budget Planner",
+  "description": "Plan and track your monthly budget",
+  "inputs": [
+    {"id": "income", "label": "Monthly Income ($)", "type": "number"},
+    {"id": "rent", "label": "Rent/Mortgage ($)", "type": "number"},
+    {"id": "utilities", "label": "Utilities ($)", "type": "number"},
+    {"id": "food", "label": "Food & Groceries ($)", "type": "number"},
+    {"id": "transport", "label": "Transportation ($)", "type": "number"},
+    {"id": "other", "label": "Other Expenses ($)", "type": "number"}
+  ],
+  "formula": "income - (rent + utilities + food + transport + other)",
+  "output": "currency",
+  "color_scheme": "blue"
+}

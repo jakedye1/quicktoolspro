@@ -1,0 +1,8 @@
+file '/Users/jacobdye/.openclaw/workspace/ai-factory/content/renders/slide_0.png'
+duration 3
+file '/Users/jacobdye/.openclaw/workspace/ai-factory/content/renders/slide_1.png'
+duration 3
+file '/Users/jacobdye/.openclaw/workspace/ai-factory/content/renders/slide_2.png'
+duration 3
+file '/Users/jacobdye/.openclaw/workspace/ai-factory/content/renders/slide_3.png'
+duration 3

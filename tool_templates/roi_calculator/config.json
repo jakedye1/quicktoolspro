@@ -1,0 +1,12 @@
+{
+  "name": "ROI Calculator",
+  "description": "Calculate return on investment for any business or project",
+  "inputs": [
+    {"id": "initial_investment", "label": "Initial Investment ($)", "type": "number"},
+    {"id": "final_value", "label": "Final Value ($)", "type": "number"},
+    {"id": "time_period", "label": "Time Period (months)", "type": "number"}
+  ],
+  "formula": "((final_value - initial_investment) / initial_investment) * 100",
+  "output": "percentage",
+  "color_scheme": "green"
+}

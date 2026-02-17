@@ -1,0 +1,14 @@
+{
+  "name": "Flip Profit Calculator",
+  "description": "Calculate profit from flipping items (cars, houses, etc)",
+  "inputs": [
+    {"id": "purchase_price", "label": "Purchase Price ($)", "type": "number"},
+    {"id": "repair_cost", "label": "Repair/Renovation Cost ($)", "type": "number"},
+    {"id": "selling_price", "label": "Selling Price ($)", "type": "number"},
+    {"id": "holding_cost", "label": "Holding Costs ($)", "type": "number"},
+    {"id": "fees", "label": "Selling Fees ($)", "type": "number"}
+  ],
+  "formula": "selling_price - (purchase_price + repair_cost + holding_cost + fees)",
+  "output": "currency",
+  "color_scheme": "orange"
+}
